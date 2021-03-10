@@ -33,9 +33,17 @@ void main()
 	int sum = StrLen(str);
 	cout << sum << endl;
 	
-	char str_2[] = "NULL Terminated Lines!!!";
-	//char str_2[] = "Ñòğîêà, îêàí÷èâàşùàÿñÿ íóë¸ì!!!";
-			
+	//char str_2[] = "NULL Terminated Lines!!!";
+	char str_2[] = "Ñòğîêà, îêàí÷èâàşùàÿñÿ íóë¸ì!!!";
+
+	/*char str_ru[] = "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõö÷øùúûüışÿ¨¸";
+	for (int i = 0; str_ru[i]; i++)
+	{
+		if (!(i % 8)) cout << endl << endl;
+		cout << (int)str_ru[i] << ' ' << str_ru[i] << '\t';
+	}
+	cout << "\n----------------------------------\n";*/
+
 	to_upper(str_2);
 	cout << "\nUpper: " << str_2 << endl;
 	to_lower(str_2);
@@ -46,23 +54,27 @@ void main()
 	char str_3[] = "Õîğîøî        æèâåò    íà   âñåòå       Âèííè-Ïóõ!!!";
 	shrink(str_3);
 
-	char str_4[] = "H?5(J)5?H";
+	//char str_4[] = "H?5(J)5?H";
+	char str_4[] = "Ë¸øà íà ïîëêå êëîïà íàø¸ë";
 	is_palindrome(str_4) ? cout << "\nÑòğîêà: \"" << str_4 << "\"  ÿâëÿåòñÿ ïàëèíäğîìîì" << endl
-	: cout << "Ñòğîêà: \"" << str_4 << "\"  íå ÿâëÿåòñÿ ïàëèíäğîìîì" << endl;
+		: cout << "Ñòğîêà: \"" << str_4 << "\"  íå ÿâëÿåòñÿ ïàëèíäğîìîì" << endl;
 
 	char str_5[] = "+2348937";
-	is_int_number(str_5)? cout << "\nÑòğîêà: \"" << str_5 << "\" ÿâëÿåòñÿ ÷èñëîì" << endl
-	: cout << "Ñòğîêà \"" << str_5 << "\" íå ÿâëÿåòñÿ ÷èñëîì" << endl;
-	
-	cout << "\nÂ ñòğîêå ñîäåğæèòñÿ ÷èñëî: " <<  to_int_number(str_5) << endl;
+	is_int_number(str_5) ? cout << "\nÑòğîêà: \"" << str_5 << "\" ÿâëÿåòñÿ ÷èñëîì" << endl
+		: cout << "Ñòğîêà \"" << str_5 << "\" íå ÿâëÿåòñÿ ÷èñëîì" << endl;
+
+	cout << "\nÂ ñòğîêå ñîäåğæèòñÿ ÷èñëî: " << to_int_number(str_5) << endl;
 
 	char str_6[] = "0b1111";
 	cout << "\n×èñëî â ñòğîêå: \"" << str_6 << "\" ñîîòâåòñòâóåò äåñÿòè÷íîìó ÷èñëó: "
-		 << bin_to_dec(str_6) << endl;
-	
+		<< bin_to_dec(str_6) << endl;
+
 	char str_7[] = "0xDDD57";
 	cout << "\n×èñëî â ñòğîêå: \"" << str_7 << "\" ñîîòâåòñòâóåò äåñÿòè÷íîìó ÷èñëó: "
-		 << hex_to_dec(str_7) << endl;
+		<< hex_to_dec(str_7) << endl;
+
+	/*for (int i = 0; i <= 256; i++)
+	cout << i << (char)i << '\n';*/
 }
 
 void InputLine(char str[], const int n)
@@ -90,8 +102,9 @@ void to_upper(char str[])
 	int i = 0;
 	for (; str[i]; ++i)
 	{
-	if (str[i]>=97 && str[i]<=122)
-	str[i] -= 32;
+	if (str[i]>=97 && str[i]<=122) str[i] -= 32; //ìàëåíüêèå ëàòèíñêèå (91 - 96 íå áóêâû)
+	if (str[i]>=-32 && str[i]<=-1) str[i] -= 32; //ìàëåíüêèå êèğèëëèöà (îò 'à' äî 'ÿ' : îò -32 äî -1)
+	if (str[i] ==-72) str[i] = -88; // áóêâû ¸(72) è ¨(88)
 	}
 }
 
@@ -100,19 +113,19 @@ void to_lower(char str[])
 	int i = 0;
 	for (; str[i]; ++i)
 	{
-		if (str[i] >= 65 && str[i] <= 90)
-		str[i] += 32;
-		//if (str[i] >= 192 && str[i] <= 223) str[i] += 32;
+	if (str[i] >= 65 && str[i] <= 90) str[i] += 32;
+	if (str[i] >= -64 && str[i] <= -33)	str[i] += 32; //áîëüøèå êèğèëëèöà (îò 'À' äî 'ß' : îò -64 äî -33)
+	if (str[i] == -88) str[i] = -72;
 	}	
 }
 
 void capitalize(char str[])
 {	
-	if (str[0] >= 97 && str[0] <= 122) str[0] -= 32;
+	if ((str[0] >= 97 && str[0] <= 122) || (str[0] >= -32 && str[0] <= -1)) str[0] -= 32;
 	int i = 0;
 	for (; str[i]; ++i)
 	{
-		if (str[i-1] == 32 && (str[i] >= 97 && str[i] <= 122))
+		if (str[i-1] == 32 && ((str[i] >= 97 && str[i] <= 122) || (str[i] >= -32 && str[i] <= -1)))
 		str[i] -= 32;
 	}
 }
@@ -149,11 +162,15 @@ bool is_palindrome(char str[])
 {	
 	int end = StrLen(str) - 1;
 	int start = end / 2;
-	bool p_drom = true;
+	bool p_drom = true;	
 	for (int i = 0; end > start; ++i, --end)
-	{
+	{			
+		if (str[i] == ' ') ++i;
+		if (str[end] == ' ') --end;
+		//if (str[i] >= 65 && str[i] <= 90) str[i] += 32; //Ìîäèôèöèğóåò ñòğîêó
+		//if (str[i] >= -64 && str[i] <= -33)	str[i] += 32; //Ìîäèôèöèğóåò ñòğîêó
 		cout << str[i] << '\t' << str[end] << endl;
-		if (str[i] != str[end])
+		if (str[i] != str[end] && str[i]+32 != str[end])
 		{
 			p_drom = false; break;
 		}
