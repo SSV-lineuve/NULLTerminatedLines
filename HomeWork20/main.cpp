@@ -36,7 +36,7 @@ void main()
 	//cout << "Длина введенной строки: " << StrLen(str) << " символов" << endl;
 	//shrink(str);
 	//cout << "Строка " << (is_palindrome(str) ? "" : "НЕ ") << "является палиндромом!" << endl;
-	//cout << "Строка " << (is_int_number(str) ? "" : "НЕ ") << "является числом!" << endl;
+	cout << "Строка " << (is_int_number(str) ? "" : "НЕ ") << "является числом!" << endl;
 	//cout << str << endl;
 	//cout << "Значение введенного числа: " << to_int_number(str)*2 << endl;
 
@@ -46,7 +46,7 @@ void main()
 	//cout << "Строка " << (is_hex_number(str) ? "" : "НЕ ") << "является hex числом!" << endl;
 	//cout << str << "(hex) = " << hex_to_dec(str) << "(dec)" << endl;
 
-	cout << "Строка " << (is_mac_address(str) ? "" : "НЕ ") << "является MAC-адресом!" << endl;
+	//cout << "Строка " << (is_mac_address(str) ? "" : "НЕ ") << "является MAC-адресом!" << endl;
 	
 	//cout << "Строка " << (is_ip_address(str) ? "" : "НЕ ") << "является IP-адресом!" << endl;
 }
@@ -118,49 +118,27 @@ void remove_symbol(char str[], char symbol)
 bool is_palindrome(char str[])
 {
 	int n = strlen(str);
-	char* buffer = new char[n + 1]{};	
-	//strcpy(buffer, str);// компилятор выдает предупреждение, что функция небезопасная
-	strcpy_s(buffer, n+1, str);// копирует строку str в стоку buffer
-	to_lower(buffer);
+	char* buffer = new char[n + 1]{};
+	char* revbuffer = new char[n + 1]{};
+	strcpy_s(buffer, n+1, str); // копирует строку str в стоку buffer
+	revbuffer = _strrev(buffer);	
 	remove_symbol(buffer, ' ');
-	n = strlen(buffer);
-	for (int i = 0; i < n/2; i++)// достаточно дойти до середины строки
-	{
-		if (buffer[i] != buffer[n - 1 - i])
-		{
-			delete[] buffer;
-			return false;
-		}
-	}
+	remove_symbol(revbuffer, ' ');	
+
 	delete[] buffer;
-	return true;
+	delete[] revbuffer;
+	return _stricmp(buffer, revbuffer) ? false : true;
 }
 
 bool is_int_number(char str[])
 {
-	for (int i = 0; str[i]; i++)
-	{
-		if (!(str[i] >= '0' && str[i] <= '9') && str[i] != ' ')//когда между цифрами есть пробелы
-			return false;
-		if (str[i] == ' ' && str[i+1] == ' ')//когда между числами только 1 пробел
-			return false;
-	}
-	return true;
+	cout << atoi(str) << endl; //преобразует в число до первого нечислового символа
+	return atoi(str);
 }
 
 int  to_int_number(char str[])
-{
-	if(!is_int_number(str)) return 0;
-	int number = 0; //Значение числа
-	for (int i = 0; str[i]; i++)
-	{
-		if (str[i] != ' ')
-		{
-			number *= 10; //Сдвигаем число на один разряд влево, чтобы освободить младший разряд для следующей цифры
-			number += str[i] - 48; //48 - ASCII-код символа '0'
-		}
-	}
-	return number;
+{	
+	return atoi(str);
 }
 
 bool is_bin_number(char str[])
@@ -199,16 +177,7 @@ int bin_to_dec(char str[])
 }
 
 bool is_hex_number(char str[])
-{
-	for (int i = 0; str[i]; i++)
-	{
-		if (!(str[i] >= 'A' && str[i] <= 'F')
-		&& !(str[i] >= 'a' && str[i] <= 'f')
-		&& !(str[i] >= '0' && str[i] <= '9')
-		&& str[i] != ' ') return false;
-
-		if (str[i - 1] == ' ' && str[i] == ' ' && str[i + 1] == ' ') return false; //допускается только 2 пробела
-	}
+{	
 	return true;
 }
 
