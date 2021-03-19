@@ -199,8 +199,8 @@ int  to_int_number(char str[])
 	if (str[0] == '-' || str[0] == '+') i = 1;
 	for (; str[i]; ++i)
 	{
-		number *= 10;
-		number += str[i] - 48;
+		number *= 10; //Сдвигаем число на один разряд влево, чтобы освободить младший разряд для следующей цифры
+		number += str[i] - 48; //48 - ASCII-код символа '0'
 	}
 	return str[0] == '-' ? number *= -1: number;
 }

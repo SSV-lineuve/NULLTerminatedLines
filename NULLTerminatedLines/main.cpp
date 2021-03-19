@@ -10,7 +10,7 @@ void main()
 	setlocale(LC_ALL, "Russian");
 	//char str[] = {'H', 'e', 'l', 'l', 'o', 0};
 	//char str[] = "Hello";
-	//cout << str << endl;
+	//cout << str << endl; //Выводится без цикла for!!!
 	//cout << sizeof(str) << endl;
 	//cout << sizeof("Hello") << endl;
 
@@ -21,7 +21,7 @@ void main()
 	cout << str << endl;//CP866
 
 	int sum = StrLen(str);
-	cout << sum << endl;
+	cout << sum << endl;	
 }
 
 void InputLine(char str[], const int n)
