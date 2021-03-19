@@ -36,7 +36,7 @@ void main()
 	//cout << "Длина введенной строки: " << StrLen(str) << " символов" << endl;
 	//shrink(str);
 	//cout << "Строка " << (is_palindrome(str) ? "" : "НЕ ") << "является палиндромом!" << endl;
-	cout << "Строка " << (is_int_number(str) ? "" : "НЕ ") << "является числом!" << endl;
+	//cout << "Строка " << (is_int_number(str) ? "" : "НЕ ") << "является числом!" << endl;
 	//cout << str << endl;
 	//cout << "Значение введенного числа: " << to_int_number(str)*2 << endl;
 
@@ -44,7 +44,7 @@ void main()
 	//cout << str << "(bin) = " << bin_to_dec(str) << "(dec)" << endl;
 	
 	//cout << "Строка " << (is_hex_number(str) ? "" : "НЕ ") << "является hex числом!" << endl;
-	//cout << str << "(hex) = " << hex_to_dec(str) << "(dec)" << endl;
+	cout << str << "(hex) = " << hex_to_dec(str) << "(dec)" << endl;
 
 	//cout << "Строка " << (is_mac_address(str) ? "" : "НЕ ") << "является MAC-адресом!" << endl;
 	
@@ -77,27 +77,15 @@ void shrink(char str[])
 {
 	for (int i = 0; str[i]; i++)
 	{
-		if ((str[i] == ' ' && (str[i + 1] == ' ' || str[i + 1] == 0)) || str[0] == ' ')
-		//удаление также пробелов перед строкой и в конце строки
+		if ((str[i] == ' ' && (str[i + 1] == ' ' || str[i + 1] == 0)) || str[0] == ' ')		
 		{
-			for (int j = i; str[j]; j++)// если сделать j=i+1, то будет меньше итераций
+			for (int j = i; str[j]; j++)
 			{
-				str[j] = str[j+1];// сдвигаем строку влево
+				str[j] = str[j+1];
 			}
-			i--;//без этого код удаляет не все пробелы
+			i--;
 		}
-	}
-
-	//for (int i = 0; str[i]; i++)
-	//{
-	//	while (str[i] == ' ' && str[i + 1] == ' ') //проверяем не если (if) пробелы, а пока (while) пробелы
-	//	{
-	//		for (int j = i; str[j]; j++)// если сделать j=i+1, то будет меньше итераций
-	//		{
-	//			str[j] = str[j + 1];// сдвигаем строку влево
-	//		}
-	//	}
-	//}
+	}	
 }
 
 void remove_symbol(char str[], char symbol)
@@ -118,16 +106,17 @@ void remove_symbol(char str[], char symbol)
 bool is_palindrome(char str[])
 {
 	int n = strlen(str);
-	char* buffer = new char[n + 1]{};
-	char* revbuffer = new char[n + 1]{};
-	strcpy_s(buffer, n+1, str); // копирует строку str в стоку buffer
-	revbuffer = _strrev(buffer);	
-	remove_symbol(buffer, ' ');
+	char* buffer = new char[n + 1]{};	
+	char* revbuffer;	
+	strcpy_s(buffer, n+1, str);	
+	revbuffer = _strrev(buffer);		
+	remove_symbol(buffer, ' ');	
 	remove_symbol(revbuffer, ' ');	
-
-	delete[] buffer;
+	int result = _stricmp(buffer, revbuffer);
+	//delete[] buffer;
 	delete[] revbuffer;
-	return _stricmp(buffer, revbuffer) ? false : true;
+	
+	return result ? false : true;
 }
 
 bool is_int_number(char str[])
@@ -153,65 +142,30 @@ bool is_bin_number(char str[])
 
 int bin_to_dec(char str[])
 {
-	if (!is_bin_number(str)) return 0;
-	int decimal = 0;
-	int weight = 1; //Весовой коэффициент разряда (2 в соотв. степени)
-	//remove_symbol(str, ' '); //нужно для второго варианта с pow()
-	int n = strlen(str);
-	for (int i = n - 1; i >= 0; i--)
-	{
-		if (str[i] != ' ')
-		{
-			decimal += (str[i] - 48) * weight;
-			weight *= 2;
-		}		
-	}
-	/*for (int i = 0; str[i]; i++)
-	{
-		if (str[i] != ' ')
-		{
-			decimal += (str[i] - 48) * pow(2, --n);
-		}
-	}*/
-	return decimal;
+	if (!is_bin_number(str)) return 0;	
+	char* end;	
+	return strtol(str, &end, 2); //берет число из строки до первого нечислового символа
 }
 
 bool is_hex_number(char str[])
-{	
+{
+	for (int i = 0; str[i]; i++)
+	{
+		if (!(str[i] >= 'A' && str[i] <= 'F')
+			&& !(str[i] >= 'a' && str[i] <= 'f')
+			&& !(str[i] >= '0' && str[i] <= '9')
+			&& str[i] != ' ') return false;
+
+		if (str[i - 1] == ' ' && str[i] == ' ' && str[i + 1] == ' ') return false; //допускается только 2 пробела
+	}
 	return true;
 }
 
 int hex_to_dec(char str[])
 {
-	if (!is_hex_number(str)) return 0;
-	int hex = 0, number = 0;
-	int weight = 1; //Весовой коэффициент разряда (2 в соотв. степени)
-	//remove_symbol(str, ' '); //нужно для второго варианта с pow()
-	int n = strlen(str);
-	for (int i = n - 1; i >= 0; i--)
-	{
-		if (str[i] == 'A' || str[i] == 'a') hex = 10;
-		else if (str[i] == 'B' || str[i] == 'b') hex = 11;
-		else if (str[i] == 'C' || str[i] == 'c') hex = 12;
-		else if (str[i] == 'D' || str[i] == 'd') hex = 13;
-		else if (str[i] == 'E' || str[i] == 'e') hex = 14;
-		else if (str[i] == 'F' || str[i] == 'f') hex = 15;
-		else hex = str[i] - 48;
-		
-		if (str[i] != ' ')
-		{
-			number += hex * weight;
-			weight *= 16;
-		}
-	}
-	/*for (int i = 0; str[i]; i++)
-	{
-		if (str[i] != ' ')
-		{
-			decimal += (str[i] - 48) * pow(2, --n);
-		}
-	}*/
-	return number;
+	if (!is_hex_number(str)) return 0;	
+	char* end;
+	return strtol(str, &end, 16); //берет число из строки до первого нечислового символа
 }
 
 bool is_mac_address(char str[])
